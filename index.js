@@ -57,6 +57,18 @@ rl.on('line', async (mes) => {
             exit();
             break;
         }
+        case 'os': {
+            const params = mes.replace(command, '').trimStart()
+            switch (params) {
+                case '--EOL': {
+                    console.log(JSON.stringify(os.EOL))
+                    break
+                }
+                default:
+                    SendMessage('Invalid input', 'red');
+            }
+            break;
+        }
         case 'up': {
             await process.chdir(path.join(process.cwd(),'../'));
             break;
