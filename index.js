@@ -1,5 +1,6 @@
 import process from 'node:process';
 import readline from 'node:readline'
+import os from 'node:os'
 
 function SendMessage(message, color) {
     let col
@@ -19,6 +20,7 @@ function SendMessage(message, color) {
 
 function startApp() {
     SendMessage(`Welcome to the File Manager, ${user}!`, 'green')
+    process.chdir(userHomeDirectory)
     SendMessage(`You are currently in '${process.cwd()}'`, 'green')
 }
 
@@ -30,6 +32,7 @@ function exit() {
 const rl = readline.createInterface({input: process.stdin, output: process.stdout});
 const args = process.argv.slice(2)
 const user = args[0].replace('--username=', '')
+const userHomeDirectory = os.homedir()
 
 startApp()
 
