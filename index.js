@@ -8,6 +8,7 @@ import osData from "./os-functions.js";
 import {errorHandler, exit, printCurrentDirectory, selectCommand, SendMessage, startApp} from "./service-functions.js";
 import calculateHash from "./hash.js";
 import copyFile from "./copy.js";
+import moveFile from "./move.js";
 
 export const rl = readline.createInterface({input: process.stdin, output: process.stdout});
 const args = process.argv.slice(2);
@@ -53,17 +54,7 @@ rl.on('line', async (mes) => {
             break;
         }
         case 'mv': {
-            const copyFromMove = mes.replace(command, '').trimStart().split(' ').at(0);
-            const copyToMove = mes.replace(command, '').trimStart().split(' ').at(1);
-            const readMove = fs.createReadStream(copyFromMove);
-            const writeMove = fs.createWriteStream(path.resolve(copyToMove, path.basename(copyFromMove)));
-            readMove.on('close', err => {
-                if (err) errorHandler(err)
-                fs.unlink(copyFromMove, err => errorHandler(err))
-            });
-            readMove.on('error', err => errorHandler(err));
-            writeMove.on('error', err => errorHandler(err));
-            await readMove.pipe(writeMove);
+            await moveFile(mes, command);
             break;
         }
         case 'compress': {
