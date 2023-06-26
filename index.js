@@ -17,6 +17,11 @@ function SendMessage(message, color) {
     console.log(`\x1b[${col}m ${message} \x1b[0m`)
 }
 
+function startApp() {
+    SendMessage(`Welcome to the File Manager, ${user}!`, 'green')
+    SendMessage(`You are currently in '${process.cwd()}'`, 'green')
+}
+
 function exit() {
     SendMessage(`Thank you for using File Manager, ${user}, goodbye!`, 'yellow')
     rl.close()
@@ -26,11 +31,11 @@ const rl = readline.createInterface({input: process.stdin, output: process.stdou
 const args = process.argv.slice(2)
 const user = args[0].replace('--username=', '')
 
-SendMessage(`Welcome to the File Manager, ${user}!`, 'green')
-SendMessage(`You are currently in '${process.cwd()}'`, 'green')
+startApp()
+
 rl.on('line', (mes) => {
     switch (mes) {
-        case 'exit': {
+        case '.exit': {
             exit()
             break
         }
