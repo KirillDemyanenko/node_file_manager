@@ -1,3 +1,6 @@
+import process from 'node:process';
+const args = process.argv.slice(2)
+const user = args[0].replace('--username=', '')
 function SendMessage(message, color) {
     let col
     switch (color) {
@@ -13,3 +16,5 @@ function SendMessage(message, color) {
     }
     console.log(`\x1b[${col}m ${message} \x1b[0m`)
 }
+SendMessage(`Welcome to the File Manager, ${user}!`, 'green')
+SendMessage(`You are currently in '${process.cwd()}'`, 'green')
