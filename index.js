@@ -29,6 +29,10 @@ function exit() {
     rl.close()
 }
 
+function errorHandler(err) {
+    if (err) throw new Error('Operation failed')
+}
+
 const rl = readline.createInterface({input: process.stdin, output: process.stdout});
 const args = process.argv.slice(2)
 const user = args[0].replace('--username=', '')
@@ -43,7 +47,7 @@ rl.on('line', (mes) => {
             break
         }
         default:
-            console.log(mes)
+            SendMessage('Invalid input', 'red')
     }
 })
 rl.on('SIGINT', () => {
