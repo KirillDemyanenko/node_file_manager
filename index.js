@@ -1,6 +1,6 @@
 import process from 'node:process';
-const args = process.argv.slice(2)
-const user = args[0].replace('--username=', '')
+import readline from 'node:readline'
+
 function SendMessage(message, color) {
     let col
     switch (color) {
@@ -16,5 +16,28 @@ function SendMessage(message, color) {
     }
     console.log(`\x1b[${col}m ${message} \x1b[0m`)
 }
+
+function exit() {
+    SendMessage(`Thank you for using File Manager, ${user}, goodbye!`, 'yellow')
+    rl.close()
+}
+
+const rl = readline.createInterface({input: process.stdin, output: process.stdout});
+const args = process.argv.slice(2)
+const user = args[0].replace('--username=', '')
+
 SendMessage(`Welcome to the File Manager, ${user}!`, 'green')
 SendMessage(`You are currently in '${process.cwd()}'`, 'green')
+rl.on('line', (mes) => {
+    switch (mes) {
+        case 'exit': {
+            exit()
+            break
+        }
+        default:
+            console.log(mes)
+    }
+})
+rl.on('SIGINT', () => {
+    exit()
+})
