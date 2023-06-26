@@ -3,7 +3,6 @@ import readline from 'node:readline'
 import os from 'node:os';
 import * as path from "node:path";
 import fs from "node:fs";
-import {exec} from 'node:child_process'
 
 function SendMessage(message, color) {
     let col;
