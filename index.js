@@ -62,7 +62,13 @@ rl.on('line', async (mes) => {
             break;
         }
         case 'ls': {
-            const files = await fs.promises.readdir(process.cwd(), {withFileTypes: true}).catch(err => errorHandler(err))
+            const files = await fs.promises.readdir(process.cwd(), {withFileTypes: true})
+                .then(files => files.sort((a,b) => {
+                    if (a.isFile() && b.isFile()) return 0
+                    if (!a.isFile() && !b.isFile()) return 0
+                    return a.isFile() ? 1 : -1
+                }))
+                .catch(err => errorHandler(err))
             const obj = []
             for (let file of files) {
                 obj.push({Name: file.name, Type: file.isFile() ? 'file' : 'directory'})
