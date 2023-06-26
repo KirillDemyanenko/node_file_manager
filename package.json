@@ -1,0 +1,21 @@
+{
+  "name": "node_file_manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "npm run start -- --username=User"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KirillDemyanenko/node_file_manager.git"
+  },
+  "author": "Kirill Demyanenko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KirillDemyanenko/node_file_manager/issues"
+  },
+  "homepage": "https://github.com/KirillDemyanenko/node_file_manager#readme"
+}
