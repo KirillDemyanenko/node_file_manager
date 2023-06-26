@@ -1,8 +1,9 @@
 import process from 'node:process';
 import readline from 'node:readline'
 import os from 'node:os';
-import * as path from "path";
-import fs from "fs";
+import * as path from "node:path";
+import fs from "node:fs";
+import {exec} from 'node:child_process'
 
 function SendMessage(message, color) {
     let col;
@@ -74,6 +75,10 @@ rl.on('line', async (mes) => {
                 }
                 case '--username': {
                     console.log(os.userInfo().username)
+                    break
+                }
+                case '--architecture': {
+                    console.log(process.arch)
                     break
                 }
                 default:
