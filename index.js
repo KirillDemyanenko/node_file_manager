@@ -3,6 +3,7 @@ import readline from 'node:readline'
 import os from 'node:os';
 import * as path from "node:path";
 import fs from "node:fs";
+import crypto from 'node:crypto'
 
 function SendMessage(message, color) {
     let col;
@@ -84,6 +85,18 @@ rl.on('line', async (mes) => {
                     SendMessage('Invalid input', 'red');
             }
             break;
+        }
+        case 'hash': {
+            const hash = crypto.createHash('sha256')
+            let dataForHash = ''
+            fs.readFile(mes.replace(command, '').trimStart(),
+                (err, data) => {
+                    if (err) errorHandler(err)
+                    dataForHash.concat(data.toString())
+                })
+            hash.update(dataForHash)
+            console.log(hash.digest('hex'))
+            break
         }
         case 'up': {
             await process.chdir(path.join(process.cwd(),'../'));
