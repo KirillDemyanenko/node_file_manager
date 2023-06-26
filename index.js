@@ -34,6 +34,10 @@ function exit() {
     rl.close();
 }
 
+function selectCommand(str) {
+    return str.includes(' ') ? str.split(' ').at(0) : str
+}
+
 function errorHandler(err) {
     if (err) throw new Error('Operation failed');
 }
@@ -46,7 +50,8 @@ const userHomeDirectory = os.homedir();
 startApp();
 
 rl.on('line', (mes) => {
-    switch (mes) {
+    const command = selectCommand(mes)
+    switch (command) {
         case '.exit': {
             exit();
             break;
@@ -58,7 +63,7 @@ rl.on('line', (mes) => {
         default:
             SendMessage('Invalid input', 'red');
     }
-    printCurrentDirectory();
+    command === '.exit' || printCurrentDirectory();
 })
 
 rl.on('SIGINT', () => {
