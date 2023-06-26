@@ -2,6 +2,7 @@ import process from 'node:process';
 import readline from 'node:readline'
 import os from 'node:os';
 import * as path from "path";
+import fs from "fs";
 
 function SendMessage(message, color) {
     let col;
@@ -49,7 +50,7 @@ const userHomeDirectory = os.homedir();
 
 startApp();
 
-rl.on('line', (mes) => {
+rl.on('line', async (mes) => {
     const command = selectCommand(mes);
     switch (command) {
         case '.exit': {
@@ -58,6 +59,15 @@ rl.on('line', (mes) => {
         }
         case 'up': {
             process.chdir(path.join(process.cwd(),'../'));
+            break;
+        }
+        case 'ls': {
+            const files = await fs.promises.readdir(process.cwd(), {withFileTypes: true}).catch(err => errorHandler(err))
+            const obj = []
+            for (let file of files) {
+                obj.push({Name: file.name, Type: file.isFile() ? 'file' : 'directory'})
+            }
+            console.table(obj)
             break;
         }
         case 'cd': {
