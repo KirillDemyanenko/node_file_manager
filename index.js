@@ -1,6 +1,7 @@
 import process from 'node:process';
 import readline from 'node:readline'
 import os from 'node:os'
+import * as path from "path";
 
 function SendMessage(message, color) {
     let col
@@ -18,10 +19,14 @@ function SendMessage(message, color) {
     console.log(`\x1b[${col}m ${message} \x1b[0m`)
 }
 
+function printCurrentDirectory() {
+    SendMessage(`You are currently in '${process.cwd()}'`, 'green')
+}
+
 function startApp() {
     SendMessage(`Welcome to the File Manager, ${user}!`, 'green')
     process.chdir(userHomeDirectory)
-    SendMessage(`You are currently in '${process.cwd()}'`, 'green')
+    printCurrentDirectory()
 }
 
 function exit() {
@@ -46,9 +51,14 @@ rl.on('line', (mes) => {
             exit()
             break
         }
+        case 'up': {
+            process.chdir(path.join(process.cwd(),'../'));
+            break
+        }
         default:
             SendMessage('Invalid input', 'red')
     }
+    printCurrentDirectory()
 })
 rl.on('SIGINT', () => {
     exit()
