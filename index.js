@@ -129,6 +129,13 @@ rl.on('line', async (mes) => {
             fs.createReadStream(copyFromCompress).pipe(brotli).pipe(fs.createWriteStream(path.resolve(copyToCompress, path.basename(copyFromCompress).concat('.br'))));
             break;
         }
+        case 'decompress': {
+            const copyFromDecompress = mes.replace(command, '').trimStart().split(' ').at(0)
+            const copyToDecompress = mes.replace(command, '').trimStart().split(' ').at(1)
+            const brotli = zlib.createBrotliDecompress();
+            fs.createReadStream(copyFromDecompress).pipe(brotli).pipe(fs.createWriteStream(path.resolve(copyToDecompress, path.basename(copyFromDecompress).replace('.br', ''))));
+            break;
+        }
         case 'rm': {
             fs.unlink(path.resolve(mes.replace(command, '').trimStart().split(' ').at(0)), err => errorHandler(err))
             break;
