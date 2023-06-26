@@ -58,7 +58,15 @@ rl.on('line', async (mes) => {
             break;
         }
         case 'up': {
-            process.chdir(path.join(process.cwd(),'../'));
+            await process.chdir(path.join(process.cwd(),'../'));
+            break;
+        }
+        case 'cat': {
+            const readStream = await fs.createReadStream(mes.replace(command, '').trimStart())
+            readStream.on('data', (chunk) => {
+                console.log(chunk.toString())
+            })
+            readStream.on('error', err => errorHandler(err))
             break;
         }
         case 'ls': {
