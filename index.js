@@ -63,24 +63,24 @@ rl.on('line', async (mes) => {
             const params = mes.replace(command, '').trimStart()
             switch (params) {
                 case '--EOL': {
-                    console.log(JSON.stringify(os.EOL))
-                    break
+                    console.log(JSON.stringify(os.EOL));
+                    break;
                 }
                 case '--cpus': {
-                    console.log(os.cpus())
-                    break
+                    console.log(os.cpus());
+                    break;
                 }
                 case '--homedir': {
-                    console.log(os.homedir())
-                    break
+                    console.log(os.homedir());
+                    break;
                 }
                 case '--username': {
-                    console.log(os.userInfo().username)
-                    break
+                    console.log(os.userInfo().username);
+                    break;
                 }
                 case '--architecture': {
-                    console.log(process.arch)
-                    break
+                    console.log(process.arch);
+                    break;
                 }
                 default:
                     SendMessage('Invalid input', 'red');
@@ -88,97 +88,112 @@ rl.on('line', async (mes) => {
             break;
         }
         case 'hash': {
-            const hash = crypto.createHash('sha256')
-            let dataForHash = ''
+            const hash = crypto.createHash('sha256');
+            let dataForHash = '';
             fs.readFile(mes.replace(command, '').trimStart(),
                 (err, data) => {
-                    if (err) errorHandler(err)
-                    dataForHash.concat(data.toString())
+                    if (err) errorHandler(err);
+                    dataForHash.concat(data.toString());
                 })
-            hash.update(dataForHash)
-            console.log(hash.digest('hex'))
-            break
+            hash.update(dataForHash);
+            console.log(hash.digest('hex'));
+            break;
         }
         case 'up': {
             await process.chdir(path.join(process.cwd(),'../'));
             break;
         }
         case 'rn': {
-            const oldName = mes.replace(command, '').trimStart().split(' ').at(0)
-            const newName = mes.replace(command, '').trimStart().split(' ').at(1)
-            await fs.rename(path.resolve(oldName), path.resolve(newName), err => errorHandler(err))
+            const oldName = mes.replace(command, '').trimStart().split(' ').at(0);
+            const newName = mes.replace(command, '').trimStart().split(' ').at(1);
+            await fs.rename(path.resolve(oldName), path.resolve(newName), err => errorHandler(err));
             break;
         }
         case 'add': {
             await fs.open(path.resolve(
                 mes.replace(command, '').trimStart()), 'w',
                     err => errorHandler(err)
-            )
+            );
             break;
         }
         case 'cp': {
-            const copyFrom = mes.replace(command, '').trimStart().split(' ').at(0)
-            const copyTo = mes.replace(command, '').trimStart().split(' ').at(1)
-            const copyRead = fs.createReadStream(copyFrom)
-            const copyWrite = fs.createWriteStream(path.resolve(copyTo, path.basename(copyFrom)))
-            copyWrite.on('error', err => errorHandler(err))
-            copyRead.on('error', err => errorHandler(err))
+            const copyFrom = mes.replace(command, '').trimStart().split(' ').at(0);
+            const copyTo = mes.replace(command, '').trimStart().split(' ').at(1);
+            const copyRead = fs.createReadStream(copyFrom);
+            const copyWrite = fs.createWriteStream(path.resolve(copyTo, path.basename(copyFrom)));
+            copyWrite.on('error', err => errorHandler(err));
+            copyRead.on('error', err => errorHandler(err));
             copyRead.pipe(copyWrite);
             break;
         }
         case 'mv': {
-            const copyFromMove = mes.replace(command, '').trimStart().split(' ').at(0)
-            const copyToMove = mes.replace(command, '').trimStart().split(' ').at(1)
-            const readMove = fs.createReadStream(copyFromMove)
-            const writeMove = fs.createWriteStream(path.resolve(copyToMove, path.basename(copyFromMove)))
+            const copyFromMove = mes.replace(command, '').trimStart().split(' ').at(0);
+            const copyToMove = mes.replace(command, '').trimStart().split(' ').at(1);
+            const readMove = fs.createReadStream(copyFromMove);
+            const writeMove = fs.createWriteStream(path.resolve(copyToMove, path.basename(copyFromMove)));
             readMove.on('close', err => {
                 if (err) errorHandler(err)
                 fs.unlink(copyFromMove, err => errorHandler(err))
-            })
-            readMove.on('error', err => errorHandler(err))
-            writeMove.on('error', err => errorHandler(err))
+            });
+            readMove.on('error', err => errorHandler(err));
+            writeMove.on('error', err => errorHandler(err));
             await readMove.pipe(writeMove);
             break;
         }
         case 'compress': {
-            const copyFromCompress = mes.replace(command, '').trimStart().split(' ').at(0)
-            const copyToCompress = mes.replace(command, '').trimStart().split(' ').at(1)
+            const copyFromCompress = mes.replace(command, '').trimStart().split(' ').at(0);
+            const copyToCompress = mes.replace(command, '').trimStart().split(' ').at(1);
             const brotli = zlib.createBrotliCompress();
-            fs.createReadStream(copyFromCompress).pipe(brotli).pipe(fs.createWriteStream(path.resolve(copyToCompress, path.basename(copyFromCompress).concat('.br'))));
+            const compressRead = fs.createReadStream(copyFromCompress);
+            const compressWrite = fs.createWriteStream(
+                path.resolve(copyToCompress, path.basename(copyFromCompress).concat('.br'))
+            );
+            compressRead.on('error', err => errorHandler(err));
+            compressWrite.on('error', err => errorHandler(err));
+            compressRead.pipe(brotli).pipe(compressWrite);
             break;
         }
         case 'decompress': {
-            const copyFromDecompress = mes.replace(command, '').trimStart().split(' ').at(0)
-            const copyToDecompress = mes.replace(command, '').trimStart().split(' ').at(1)
+            const copyFromDecompress = mes.replace(command, '').trimStart().split(' ').at(0);
+            const copyToDecompress = mes.replace(command, '').trimStart().split(' ').at(1);
             const brotli = zlib.createBrotliDecompress();
-            fs.createReadStream(copyFromDecompress).pipe(brotli).pipe(fs.createWriteStream(path.resolve(copyToDecompress, path.basename(copyFromDecompress).replace('.br', ''))));
+            const decompressRead = fs.createReadStream(copyFromDecompress);
+            const decompressWrite = fs.createWriteStream(
+                path.resolve(copyToDecompress, path.basename(copyFromDecompress).replace('.br', ''))
+            );
+            decompressRead.on('error', err => errorHandler(err));
+            decompressWrite.on('error', err => errorHandler(err));
+            decompressRead.pipe(brotli).pipe(decompressWrite);
             break;
         }
         case 'rm': {
-            fs.unlink(path.resolve(mes.replace(command, '').trimStart().split(' ').at(0)), err => errorHandler(err))
+            fs.unlink(
+                path.resolve(mes.replace(command, '').trimStart().split(' ').at(0)),
+                    err => errorHandler(err)
+            );
             break;
         }
         case 'cat': {
-            const readStream = await fs.createReadStream(mes.replace(command, '').trimStart())
+            const readStream = await fs.createReadStream(mes.replace(command, '').trimStart());
             readStream.on('data', (chunk) => {
-                console.log(chunk.toString())
+                console.log(chunk.toString());
             })
-            readStream.on('error', err => errorHandler(err))
+            readStream.on('error', err => errorHandler(err));
             break;
         }
         case 'ls': {
             const files = await fs.promises.readdir(process.cwd(), {withFileTypes: true})
                 .then(files => files.sort((a,b) => {
-                    if (a.isFile() && b.isFile()) return 0
-                    if (!a.isFile() && !b.isFile()) return 0
-                    return a.isFile() ? 1 : -1
+                    if (a.isFile() && b.isFile()) return 0;
+                    if (!a.isFile() && !b.isFile()) return 0;
+                    return a.isFile() ? 1 : -1;
                 }))
-                .catch(err => errorHandler(err))
-            const obj = []
+                .catch(err => errorHandler(err));
+            const obj = [];
             for (let file of files) {
-                obj.push({Name: file.name, Type: file.isFile() ? 'file' : 'directory'})
+                obj.push({Name: file.name, Type: file.isFile() ? 'file' : 'directory'});
             }
-            console.table(obj)
+            console.table(obj);
             break;
         }
         case 'cd': {
