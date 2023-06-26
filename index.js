@@ -5,50 +5,13 @@ import * as path from "node:path";
 import fs from "node:fs";
 import crypto from 'node:crypto'
 import * as zlib from "node:zlib";
+import osData from "./os-functions.js";
+import {errorHandler, exit, printCurrentDirectory, selectCommand, SendMessage, startApp} from "./service-functions.js";
 
-function SendMessage(message, color) {
-    let col;
-    switch (color) {
-        case 'green':
-            col = 33;
-            break;
-        case 'yellow':
-            col = 93;
-            break;
-        default:
-            col = 31;
-            break;
-    }
-    console.log(`\x1b[${col}m ${message} \x1b[0m`);
-}
-
-function printCurrentDirectory() {
-    SendMessage(`You are currently in '${process.cwd()}'`, 'green');
-}
-
-function startApp() {
-    SendMessage(`Welcome to the File Manager, ${user}!`, 'green');
-    process.chdir(userHomeDirectory);
-    printCurrentDirectory();
-}
-
-function exit() {
-    SendMessage(`Thank you for using File Manager, ${user}, goodbye!`, 'yellow');
-    rl.close();
-}
-
-function selectCommand(str) {
-    return str.includes(' ') ? str.split(' ').at(0) : str;
-}
-
-function errorHandler(err) {
-    if (err) SendMessage('Operation failed', 'red');
-}
-
-const rl = readline.createInterface({input: process.stdin, output: process.stdout});
+export const rl = readline.createInterface({input: process.stdin, output: process.stdout});
 const args = process.argv.slice(2);
-const user = args[0].replace('--username=', '');
-const userHomeDirectory = os.homedir();
+export const user = args[0].replace('--username=', '');
+export const userHomeDirectory = os.homedir();
 
 startApp();
 
@@ -61,30 +24,7 @@ rl.on('line', async (mes) => {
         }
         case 'os': {
             const params = mes.replace(command, '').trimStart()
-            switch (params) {
-                case '--EOL': {
-                    console.log(JSON.stringify(os.EOL));
-                    break;
-                }
-                case '--cpus': {
-                    console.log(os.cpus());
-                    break;
-                }
-                case '--homedir': {
-                    console.log(os.homedir());
-                    break;
-                }
-                case '--username': {
-                    console.log(os.userInfo().username);
-                    break;
-                }
-                case '--architecture': {
-                    console.log(process.arch);
-                    break;
-                }
-                default:
-                    SendMessage('Invalid input', 'red');
-            }
+            osData(params)
             break;
         }
         case 'hash': {
