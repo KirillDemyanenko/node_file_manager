@@ -61,6 +61,12 @@ rl.on('line', async (mes) => {
             await process.chdir(path.join(process.cwd(),'../'));
             break;
         }
+        case 'rn': {
+            const oldName = mes.replace(command, '').trimStart().split(' ').at(0)
+            const newName = mes.replace(command, '').trimStart().split(' ').at(1)
+            await fs.rename(path.resolve(oldName), path.resolve(newName), err => errorHandler(err))
+            break;
+        }
         case 'add': {
             await fs.open(path.resolve(
                 mes.replace(command, '').trimStart()), 'w',
