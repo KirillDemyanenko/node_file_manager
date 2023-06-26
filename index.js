@@ -119,7 +119,11 @@ rl.on('line', async (mes) => {
         case 'cp': {
             const copyFrom = mes.replace(command, '').trimStart().split(' ').at(0)
             const copyTo = mes.replace(command, '').trimStart().split(' ').at(1)
-            fs.createReadStream(copyFrom).pipe(fs.createWriteStream(path.resolve(copyTo, path.basename(copyFrom))));
+            const copyRead = fs.createReadStream(copyFrom)
+            const copyWrite = fs.createWriteStream(path.resolve(copyTo, path.basename(copyFrom)))
+            copyWrite.on('error', err => errorHandler(err))
+            copyRead.on('error', err => errorHandler(err))
+            copyRead.pipe(copyWrite);
             break;
         }
         case 'mv': {
