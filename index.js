@@ -64,6 +64,10 @@ rl.on('line', async (mes) => {
                     console.log(JSON.stringify(os.EOL))
                     break
                 }
+                case '--cpus': {
+                    console.log(os.cpus())
+                    break
+                }
                 default:
                     SendMessage('Invalid input', 'red');
             }
