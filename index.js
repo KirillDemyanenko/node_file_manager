@@ -122,6 +122,20 @@ rl.on('line', async (mes) => {
             fs.createReadStream(copyFrom).pipe(fs.createWriteStream(path.resolve(copyTo, path.basename(copyFrom))));
             break;
         }
+        case 'mv': {
+            const copyFromMove = mes.replace(command, '').trimStart().split(' ').at(0)
+            const copyToMove = mes.replace(command, '').trimStart().split(' ').at(1)
+            const readMove = fs.createReadStream(copyFromMove)
+            const writeMove = fs.createWriteStream(path.resolve(copyToMove, path.basename(copyFromMove)))
+            readMove.on('close', err => {
+                if (err) errorHandler(err)
+                fs.unlink(copyFromMove, err => errorHandler(err))
+            })
+            readMove.on('error', err => errorHandler(err))
+            writeMove.on('error', err => errorHandler(err))
+            await readMove.pipe(writeMove);
+            break;
+        }
         case 'compress': {
             const copyFromCompress = mes.replace(command, '').trimStart().split(' ').at(0)
             const copyToCompress = mes.replace(command, '').trimStart().split(' ').at(1)
