@@ -74,6 +74,16 @@ rl.on('line', async (mes) => {
             )
             break;
         }
+        case 'cp': {
+            const copyFrom = mes.replace(command, '').trimStart().split(' ').at(0)
+            const copyTo = mes.replace(command, '').trimStart().split(' ').at(1)
+            fs.createReadStream(copyFrom).pipe(fs.createWriteStream(path.resolve(copyTo, path.basename(copyFrom))));
+            break;
+        }
+        case 'rm': {
+            fs.unlink(path.resolve(mes.replace(command, '').trimStart().split(' ').at(0)), err => errorHandler(err))
+            break;
+        }
         case 'cat': {
             const readStream = await fs.createReadStream(mes.replace(command, '').trimStart())
             readStream.on('data', (chunk) => {
