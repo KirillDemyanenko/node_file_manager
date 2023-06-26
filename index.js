@@ -3,10 +3,10 @@ import readline from 'node:readline'
 import os from 'node:os';
 import * as path from "node:path";
 import fs from "node:fs";
-import crypto from 'node:crypto'
 import * as zlib from "node:zlib";
 import osData from "./os-functions.js";
 import {errorHandler, exit, printCurrentDirectory, selectCommand, SendMessage, startApp} from "./service-functions.js";
+import calculateHash from "./hash.js";
 
 export const rl = readline.createInterface({input: process.stdin, output: process.stdout});
 const args = process.argv.slice(2);
@@ -27,15 +27,7 @@ rl.on('line', async (mes) => {
             break;
         }
         case 'hash': {
-            const hash = crypto.createHash('sha256');
-            let dataForHash = '';
-            fs.readFile(mes.replace(command, '').trimStart(),
-                (err, data) => {
-                    if (err) errorHandler(err);
-                    dataForHash.concat(data.toString());
-                })
-            hash.update(dataForHash);
-            console.log(hash.digest('hex'));
+            calculateHash(mes.replace(command, '').trimStart())
             break;
         }
         case 'up': {
