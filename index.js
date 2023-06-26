@@ -68,6 +68,14 @@ rl.on('line', async (mes) => {
                     console.log(os.cpus())
                     break
                 }
+                case '--homedir': {
+                    console.log(os.homedir())
+                    break
+                }
+                case '--username': {
+                    console.log(os.userInfo().username)
+                    break
+                }
                 default:
                     SendMessage('Invalid input', 'red');
             }
