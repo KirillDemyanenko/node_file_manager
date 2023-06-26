@@ -3,13 +3,13 @@ import readline from 'node:readline'
 import os from 'node:os';
 import * as path from "node:path";
 import fs from "node:fs";
-import osData from "./os-functions.js";
-import {errorHandler, exit, printCurrentDirectory, selectCommand, SendMessage, startApp} from "./service-functions.js";
-import calculateHash from "./hash.js";
-import copyFile from "./copy.js";
-import moveFile from "./move.js";
-import compressBrotli from "./compress-brotli.js";
-import decompressBrotli from "./decompress-brotli.js";
+import osData from "./src/os-functions.js";
+import {errorHandler, exit, printCurrentDirectory, selectCommand, SendMessage, startApp} from "./src/service-functions.js";
+import calculateHash from "./src/hash.js";
+import copyFile from "./src/copy.js";
+import moveFile from "./src/move.js";
+import compressBrotli from "./src/compress-brotli.js";
+import decompressBrotli from "./src/decompress-brotli.js";
 
 export const rl = readline.createInterface({input: process.stdin, output: process.stdout});
 const args = process.argv.slice(2);

@@ -1,5 +1,5 @@
 import process from "node:process";
-import {rl, user, userHomeDirectory} from "./index.js";
+import {rl, user, userHomeDirectory} from "../index.js";
 
 export function SendMessage(message, color) {
     let col;
