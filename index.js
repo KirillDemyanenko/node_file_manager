@@ -35,11 +35,11 @@ function exit() {
 }
 
 function selectCommand(str) {
-    return str.includes(' ') ? str.split(' ').at(0) : str
+    return str.includes(' ') ? str.split(' ').at(0) : str;
 }
 
 function errorHandler(err) {
-    if (err) throw new Error('Operation failed');
+    if (err) SendMessage('Operation failed', 'red');
 }
 
 const rl = readline.createInterface({input: process.stdin, output: process.stdout});
@@ -50,7 +50,7 @@ const userHomeDirectory = os.homedir();
 startApp();
 
 rl.on('line', (mes) => {
-    const command = selectCommand(mes)
+    const command = selectCommand(mes);
     switch (command) {
         case '.exit': {
             exit();
@@ -58,6 +58,16 @@ rl.on('line', (mes) => {
         }
         case 'up': {
             process.chdir(path.join(process.cwd(),'../'));
+            break;
+        }
+        case 'cd': {
+            const newPath = mes.replace(command, '').trimStart();
+            try {
+                process.chdir(path.resolve(newPath));
+            }
+            catch (err) {
+                errorHandler(err);
+            }
             break;
         }
         default:
