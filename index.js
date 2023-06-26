@@ -23,8 +23,7 @@ rl.on('line', async (mes) => {
             break;
         }
         case 'os': {
-            const params = mes.replace(command, '').trimStart()
-            osData(params)
+            osData(mes.replace(command, '').trimStart())
             break;
         }
         case 'hash': {
