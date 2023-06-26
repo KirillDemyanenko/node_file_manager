@@ -7,6 +7,7 @@ import * as zlib from "node:zlib";
 import osData from "./os-functions.js";
 import {errorHandler, exit, printCurrentDirectory, selectCommand, SendMessage, startApp} from "./service-functions.js";
 import calculateHash from "./hash.js";
+import copyFile from "./copy.js";
 
 export const rl = readline.createInterface({input: process.stdin, output: process.stdout});
 const args = process.argv.slice(2);
@@ -23,11 +24,11 @@ rl.on('line', async (mes) => {
             break;
         }
         case 'os': {
-            osData(mes.replace(command, '').trimStart())
+            osData(mes.replace(command, '').trimStart());
             break;
         }
         case 'hash': {
-            calculateHash(mes.replace(command, '').trimStart())
+            calculateHash(mes.replace(command, '').trimStart());
             break;
         }
         case 'up': {
@@ -48,13 +49,7 @@ rl.on('line', async (mes) => {
             break;
         }
         case 'cp': {
-            const copyFrom = mes.replace(command, '').trimStart().split(' ').at(0);
-            const copyTo = mes.replace(command, '').trimStart().split(' ').at(1);
-            const copyRead = fs.createReadStream(copyFrom);
-            const copyWrite = fs.createWriteStream(path.resolve(copyTo, path.basename(copyFrom)));
-            copyWrite.on('error', err => errorHandler(err));
-            copyRead.on('error', err => errorHandler(err));
-            copyRead.pipe(copyWrite);
+            copyFile(mes, command);
             break;
         }
         case 'mv': {
