@@ -4,6 +4,7 @@ import os from 'node:os';
 import * as path from "node:path";
 import fs from "node:fs";
 import crypto from 'node:crypto'
+import * as zlib from "node:zlib";
 
 function SendMessage(message, color) {
     let col;
@@ -119,6 +120,13 @@ rl.on('line', async (mes) => {
             const copyFrom = mes.replace(command, '').trimStart().split(' ').at(0)
             const copyTo = mes.replace(command, '').trimStart().split(' ').at(1)
             fs.createReadStream(copyFrom).pipe(fs.createWriteStream(path.resolve(copyTo, path.basename(copyFrom))));
+            break;
+        }
+        case 'compress': {
+            const copyFromCompress = mes.replace(command, '').trimStart().split(' ').at(0)
+            const copyToCompress = mes.replace(command, '').trimStart().split(' ').at(1)
+            const brotli = zlib.createBrotliCompress();
+            fs.createReadStream(copyFromCompress).pipe(brotli).pipe(fs.createWriteStream(path.resolve(copyToCompress, path.basename(copyFromCompress).concat('.br'))));
             break;
         }
         case 'rm': {
